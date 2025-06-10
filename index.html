@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik Konuları Takip</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .konular-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .konular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .konu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .konu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .konu-item label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--dark-color);
+        }
+
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ced4da;
+            border-radius: 5px;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .progress-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .reset-btn {
+            background-color: #f8f9fa;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .reset-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 600px) {
+            .konular-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Matematik Konu Takip</h1>
+           
+        </header>
+
+        <div class="konular-container">
+            <h2>Konular</h2>
+            <div class="konular-grid" id="konularListesi">
+                <!-- Konular buraya eklenecek -->
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <h2>İlerleme Durumu</h2>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p class="progress-text" id="progressText">0/24 konu tamamlandı</p>
+            <div class="buttons">
+                <button class="reset-btn" id="resetBtn">Sıfırla</button>
+                <button class="save-btn" id="saveBtn">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const konular = [
+                "Temel Kavramlar",
+                "Tek-çift Sayılar",
+                "Sayı Basamakları",
+                "Bölünebilme",
+                "Faktöriyel",
+                "Rasyonel Sayılar",
+                "Eşitsizlik",
+                "Mutlak Değer",
+                "Denklem",
+                "Üslü Sayılar",
+                "Köklü Sayılar",
+                "Fonksiyonlar",
+                "Kümeler",
+                "Sayı Problemleri",
+                "Kesir Problemleri",
+                "Yaş Problemleri",
+                "Yüzde / Kâr-Zarar Problemleri",
+                "Hareket Problemleri",
+                "Grafik Problemleri",
+                "Sayısal Mantık",
+                "Üçgende Açılar",
+                "Çember-Daire",
+                "Katı Cisimler",
+                "Analitik geometri"
+            ];
+
+            const konularListesi = document.getElementById('konularListesi');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const resetBtn = document.getElementById('resetBtn');
+            const saveBtn = document.getElementById('saveBtn');
+
+            // Konuları listeye ekle
+            konular.forEach((konu, index) => {
+                const konuId = `konu-${index + 1}`;
+                const konuItem = document.createElement('div');
+                konuItem.className = 'konu-item';
+                konuItem.innerHTML = `
+                    <label>
+                        <input type="checkbox" id="${konuId}">
+                        ${konu}
+                    </label>
+                `;
+                konularListesi.appendChild(konuItem);
+
+                // Kayıtlı durumu yükle
+                const checkbox = document.getElementById(konuId);
+                const savedState = localStorage.getItem(konuId);
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                }
+
+                // Değişiklikleri dinle
+                checkbox.addEventListener('change', updateProgress);
+            });
+
+            // İlerlemeyi güncelle
+            function updateProgress() {
+                const checkboxes = document.querySelectorAll('#konularListesi input[type="checkbox"]');
+                const checkedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+                const totalCount = checkboxes.length;
+                const percentage = (checkedCount / totalCount) * 100;
+
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = `${checkedCount}/${totalCount} konu tamamlandı`;
+
+                // Tüm checkbox'ların durumunu kaydet
+                checkboxes.forEach(checkbox => {
+                    localStorage.setItem(checkbox.id, checkbox.checked);
+                });
+            }
+
+            // Sıfırla butonu
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Tüm ilerlemeyi sıfırlamak istediğinize emin misiniz?')) {
+                    const checkboxes = document.querySelectorAll('#konularListesi input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                        localStorage.setItem(checkbox.id, false);
+                    });
+                    updateProgress();
+                }
+            });
+
+            // Kaydet butonu (gereksiz çünkü otomatik kaydediyoruz)
+            saveBtn.addEventListener('click', function() {
+                updateProgress();
+                alert('İlerleme kaydedildi!');
+            });
+
+            // Sayfa yüklendiğinde ilerlemeyi güncelle
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
